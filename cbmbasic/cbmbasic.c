@@ -18,12 +18,15 @@ RUN
 
 */
 
-#define SHOW_AVG_SPEED      0
+#define SHOW_AVG_SPEED      1
+
+state_t *state;
 
 int
 main(int argc, char *argv[])
 {
 	int clk = 0;
+	int show_status = 0;
 
 	if (argc > 1 && strcmp(argv[1], "--benchmark") == 0)
 		benchmark_mode = 1;
@@ -47,18 +50,19 @@ main(int argc, char *argv[])
 		if (clk)
 			handle_monitor(state);
 
-/*		chipStatus(state);
-*/
-
+		if(show_status){
+		    chipStatus(state);
+		}
 #if SHOW_AVG_SPEED
-		if ( (cycle % 20000) == 0 ) {
-            end_time = clock();
-            double time = (end_time - start_time)/ (double)(CLOCKS_PER_SEC);
-            double speed = cycle / time;
-            printf("cycle %lu, speed %g steps per second\n", cycle, speed);
-        }
+		if (!(cycle % 20000)) {
+		    unsigned long speed, time;
+		    end_time = clock();
+		    time = (end_time - start_time);
+		    time = time / CLOCKS_PER_SEC;
+		    time = time?time:1;	// avoid div by zero
+		    speed = cycle / time;
+		    printf("cycle %lu, speed %lu steps per second\n", cycle, speed);
+		}
 #endif
-
-	}   /* end infinite loop */
-
+	};
 }

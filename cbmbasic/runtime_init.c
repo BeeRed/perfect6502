@@ -23,11 +23,11 @@ unsigned short PC;
 int N, Z, C;
 
 int
-init_monitor()
+init_monitor(void)
 {
 	FILE *f;
 	f = fopen("cbmbasic/cbmbasic.bin", "rb");
-	if (f == NULL) {
+	if(f==NULL) {
 		perror("Error opening cbmbasic/cbmbasic.bin");
 		return 1;
 	}

@@ -270,6 +270,7 @@ plugin_gone(void) {
 			errno = 0;
 			if (system(s) == -1 && errno != 0) {
 				perror("System call failed");
+				exit(1);
 			}
 
 			continue;
