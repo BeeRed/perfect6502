@@ -1,12 +1,16 @@
-OBJS=perfect6502.o apple1basic/apple1basic.o
-CFLAGS=-Werror -Wall -O3
+OBJS=perfect6502.o netlist_sim.o
+OBJS+=apple1basic/apple1basic.o
+CFLAGS+=-Werror
+CFLAGS+=-Wall
+CFLAGS+=-O3
+CFLAGS+=-g
 CC=cc
 
 all: apple1basic
 
 apple1basic: $(OBJS)
-	$(CC) -o apple1basic $(OBJS)
+	$(CC) -o apple1basic/apple1basic $(OBJS)
 
 clean:
-	rm -f $(OBJS) apple1basic
+	rm -f $(OBJS) apple1basic/apple1basic
 
