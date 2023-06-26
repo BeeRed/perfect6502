@@ -395,6 +395,7 @@ getGroupValue(group_value node_value)
 		case contains_vss:
 		case contains_pulldown:
 		case contains_nothing:
+		default:
 			return NO;
 	}
 	assert(0);
