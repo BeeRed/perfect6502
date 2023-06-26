@@ -5,8 +5,9 @@
 #include <io.h>
 #endif
 #include "../perfect6502.h"
+#include <time.h>
  
- state_t *state;
+state_t *state;
 
 /************************************************************
  *
@@ -43,7 +44,7 @@ init_monitor()
 void
 charout(char ch) {
 	unsigned char S = readSP(state);
-	unsigned short a = (1 + memory[0x0100+S+1]) | memory[0x0100+((S+2) & 0xFF)] << 8;
+	unsigned short a = 1 + (memory[0x0100+S+1] | memory[0x0100+((S+2) & 0xFF)] << 8);
 
 	/*
 	 * Apple I BASIC prints every character received
@@ -83,7 +84,7 @@ charout(char ch) {
 }
 
 void
-handle_monitor()
+handle_monitor(void *state)
 {
 	if (readRW(state)) {
 		unsigned short a = readAddressBus(state);
@@ -118,26 +119,49 @@ handle_monitor()
 	}
 }
 
+#define SHOW_AVG_SPEED 1
 int
 main(int argc, char **argv)
 {
 	int clk = 0;
+	int show_status = 0;
+
+	printf("argc=%d\n", argc);
+	if(argc>1) {
+	    show_status = 1;
+	}
 
 	state = initAndResetChip();
 
 	/* set up memory for user program */
-	if (init_monitor()) {
-		return 1;
+	if(init_monitor()){
+	    return 1;
 	}
+#if SHOW_AVG_SPEED
+	clock_t end_time;
+	clock_t start_time = clock();
+#endif
 
 	/* emulate the 6502! */
 	for (;;) {
 		step(state);
 		clk = !clk;
 		if (!clk)
-			handle_monitor();
+			handle_monitor(state);
 
-		chipStatus(state);
-		//if (!(cycle % 1000)) printf("%d\n", cycle);
+		if(show_status){
+		    chipStatus(state);
+		}
+#if SHOW_AVG_SPEED
+		if (!(cycle % 20000)) {
+		    unsigned long speed, time;
+		    end_time = clock();
+		    time = (end_time - start_time);
+		    time = time / CLOCKS_PER_SEC;
+		    time = time?time:1;	// avoid div by zero
+		    speed = cycle / time;
+		    printf("cycle %lu, speed %lu steps per second\n", cycle, speed);
+		}
+#endif
 	};
 }
