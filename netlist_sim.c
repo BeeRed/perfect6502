@@ -526,7 +526,7 @@ state_t *
 setupNodesAndTransistors(netlist_transdefs *transdefs, BOOL *node_is_pullup, nodenum_t nodes, nodenum_t transistors, nodenum_t vss, nodenum_t vcc)
 {
 	/* allocate state */
-	state_t *state = malloc(sizeof(state_t));
+	state_t *state = calloc(1, sizeof(state_t));
 	state->nodes = nodes;
 	state->transistors = transistors;
 	state->vss = vss;
@@ -647,7 +647,7 @@ setupNodesAndTransistors(netlist_transdefs *transdefs, BOOL *node_is_pullup, nod
     state->node_block = calloc( block_gate_size, sizeof(*state->nodes_gates) );
     
     /* Assign offsets from our block */
-    state->nodes_gates = malloc((nodes+1) * sizeof(*state->nodes_gates));
+    state->nodes_gates = calloc((nodes+1), sizeof(*state->nodes_gates));
     nodenum_t node_index = 0;
     for (i = 0; i < state->nodes; i++) {
         count_t count = nodes_gatecount[i];
@@ -697,7 +697,7 @@ setupNodesAndTransistors(netlist_transdefs *transdefs, BOOL *node_is_pullup, nod
     state->dependent_block = calloc( block_dep_size, sizeof(*state->nodes_dependant) );
     
     /* Assign offsets from our block, using only counts needed */
-    state->nodes_dependant = malloc((nodes+1) * sizeof(*state->nodes_dependant));
+    state->nodes_dependant = calloc((nodes+1), sizeof(*state->nodes_dependant));
     nodenum_t dep_index = 0;
     for (i = 0; i < state->nodes; i++) {
         nodenum_t count = nodes_dep_count[i];
@@ -707,7 +707,7 @@ setupNodesAndTransistors(netlist_transdefs *transdefs, BOOL *node_is_pullup, nod
     state->nodes_dependant[state->nodes] = dep_index;    /* fill the end entry, so we can calculate distances/counts */
     
     /* Assign offsets from our block, using only counts needed */
-    state->nodes_left_dependant = malloc((nodes+1) * sizeof(*state->nodes_left_dependant));
+    state->nodes_left_dependant = calloc((nodes+1), sizeof(*state->nodes_left_dependant));
     for (i = 0; i < state->nodes; i++) {
         nodenum_t count = nodes_left_dep_count[i];
         state->nodes_left_dependant[i] = dep_index;
