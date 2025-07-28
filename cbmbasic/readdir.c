@@ -25,7 +25,7 @@ DIR *opendir(const char *name)
 	strcpy(name2, name);
 	strcat(name2, "/*");
 
-	if (!(ret = (DIR *)malloc(sizeof(DIR))))
+	if (!(ret = (DIR *)calloc(1, sizeof(DIR))))
 	{
 		errno = ENOMEM;
 		return ret;
